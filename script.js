@@ -6,7 +6,7 @@ const colleges = [
   { name: "Desert Valley University", state: "AZ", major: "Engineering", tuition: 31000, size: "Large" },
   { name: "Prairie Health College", state: "KS", major: "Biology", tuition: 19000, size: "Small" }
 ];
-const stateAbbrs = ["AL","AK","AZ","AR","CA","CO","CT","DE","FL","GA","HI","ID","IL","IN","IA","KS","KY","LA","ME","MD","MA","MI","MN","MS","MO","MT","NE","NV","NH","NJ","NM","NY","NC","ND","OH","OK","OR","PA","RI","SC","SD","TN","TX","UT","VT","VA","WA","WV","WI","WY"];
+const stateNames = {AL:"Alabama",AK:"Alaska",AZ:"Arizona",AR:"Arkansas",CA:"California",CO:"Colorado",CT:"Connecticut",DE:"Delaware",FL:"Florida",GA:"Georgia",HI:"Hawaii",ID:"Idaho",IL:"Illinois",IN:"Indiana",IA:"Iowa",KS:"Kansas",KY:"Kentucky",LA:"Louisiana",ME:"Maine",MD:"Maryland",MA:"Massachusetts",MI:"Michigan",MN:"Minnesota",MS:"Mississippi",MO:"Missouri",MT:"Montana",NE:"Nebraska",NV:"Nevada",NH:"New Hampshire",NJ:"New Jersey",NM:"New Mexico",NY:"New York",NC:"North Carolina",ND:"North Dakota",OH:"Ohio",OK:"Oklahoma",OR:"Oregon",PA:"Pennsylvania",RI:"Rhode Island",SC:"South Carolina",SD:"South Dakota",TN:"Tennessee",TX:"Texas",UT:"Utah",VT:"Vermont",VA:"Virginia",WA:"Washington",WV:"West Virginia",WI:"Wisconsin",WY:"Wyoming"};
 const fipsToAbbr = {1:"AL",2:"AK",4:"AZ",5:"AR",6:"CA",8:"CO",9:"CT",10:"DE",12:"FL",13:"GA",15:"HI",16:"ID",17:"IL",18:"IN",19:"IA",20:"KS",21:"KY",22:"LA",23:"ME",24:"MD",25:"MA",26:"MI",27:"MN",28:"MS",29:"MO",30:"MT",31:"NE",32:"NV",33:"NH",34:"NJ",35:"NM",36:"NY",37:"NC",38:"ND",39:"OH",40:"OK",41:"OR",42:"PA",44:"RI",45:"SC",46:"SD",47:"TN",48:"TX",49:"UT",50:"VT",51:"VA",53:"WA",54:"WV",55:"WI",56:"WY"};
 const fieldsFolders = document.getElementById("fields-folders");
 const tabButtons = document.querySelectorAll(".tab-btn");
@@ -26,7 +26,7 @@ const majorsSearchSummary = document.getElementById("majors-search-summary");
 function renderCollegeList(items, target) { target.innerHTML=""; if(!items.length){target.innerHTML="<li>No matching colleges found.</li>";return;} items.forEach(c=>{const li=document.createElement("li");li.textContent=`${c.name} (${c.state}) — ${c.major}, $${c.tuition.toLocaleString()}/yr, ${c.size}`;target.appendChild(li);}); }
 function initTabs(){tabButtons.forEach(button=>button.addEventListener("click",()=>{tabButtons.forEach(btn=>btn.classList.remove("active"));document.querySelectorAll(".tab-panel").forEach(panel=>panel.classList.remove("active"));button.classList.add("active");document.getElementById(`tab-${button.dataset.tab}`).classList.add("active");}));}
 function initSearch(){renderCollegeList(colleges,collegeResults);collegeSearch.addEventListener("input",e=>renderCollegeList(colleges.filter(c=>c.name.toLowerCase().includes(e.target.value.toLowerCase().trim())),collegeResults));clearSearch.addEventListener("click",()=>{collegeSearch.value="";renderCollegeList(colleges,collegeResults);});}
-function initPreferenceOptions(){stateAbbrs.forEach(code=>prefState.insertAdjacentHTML("beforeend",`<option value='${code}'>${code}</option>`));[...new Set(colleges.map(c=>c.major))].forEach(major=>prefMajor.insertAdjacentHTML("beforeend",`<option value='${major}'>${major}</option>`));}
+function initPreferenceOptions(){Object.entries(stateNames).forEach(([code,name])=>prefState.insertAdjacentHTML("beforeend",`<option value="${code}">${name}</option>`));[...new Set(colleges.map(c=>c.major))].forEach(major=>prefMajor.insertAdjacentHTML("beforeend",`<option value="${major}">${major}</option>`));}
 function initPreferencesForm(){prefForm.addEventListener("submit",(e)=>{e.preventDefault();const matches=colleges.filter(c=>(!prefState.value||c.state===prefState.value)&&(!prefMajor.value||c.major===prefMajor.value)&&(!prefBudget.value||c.tuition<=Number(prefBudget.value))&&(!prefSize.value||c.size===prefSize.value));renderCollegeList(matches,matchResults);});}
 const studyFields = {
   "STEM & Applied Sciences": {
@@ -140,7 +140,7 @@ async function initGeoMap(){
   const path = d3.geoPath(projection);
 
   function renderStateColleges(abbr){
-    title.textContent = `Top 25 Colleges in ${abbr}`;
+    title.textContent = `Top 25 Colleges in ${stateNames[abbr] || abbr}`;
     list.innerHTML = "";
     buildStateTop25(abbr).forEach((college)=>{
       const li = document.createElement("li");
