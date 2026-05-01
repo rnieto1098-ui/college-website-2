@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Campus Insider</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header class="hero">
+      <div class="container">
+        <p class="badge">Campus Insider</p>
+        <h1>Find the Right College</h1>
+        <p class="hero-subtitle">Use tabs to explore search, rankings, preferences, and a U.S. map.</p>
+      </div>
+    </header>
+
+    <main class="container">
+      <nav class="tabs" aria-label="App sections">
+        <button class="tab-btn active" data-tab="search" type="button">Search</button>
+        <button class="tab-btn" data-tab="majors" type="button">Majors</button>
+        <button class="tab-btn" data-tab="preferences" type="button">Preferences</button>
+        <button class="tab-btn" data-tab="states" type="button">States Map</button>
+      </nav>
+
+      <section id="tab-search" class="tab-panel active card">
+        <h2>Search Colleges</h2>
+        <div class="search-wrap">
+          <input type="search" id="college-search" placeholder="Search by college name..." aria-label="Search by college name" />
+          <button id="clear-search" type="button">Clear</button>
+        </div>
+        <ul id="college-results" class="college-list" aria-live="polite"></ul>
+      </section>
+
+      <section id="tab-majors" class="tab-panel card">
+        <h2>Fields of Study, Majors & School Rankings</h2>
+        <div id="fields-folders" class="fields-folders"></div>
+      </section>
+
+      <section id="tab-preferences" class="tab-panel card">
+        <h2>Your College Preferences</h2>
+        <form id="preferences-form" class="preferences-form">
+          <label>Preferred State<select id="pref-state" name="state"><option value="">Any state</option></select></label>
+          <label>Desired Major<select id="pref-major" name="major"><option value="">Any major</option></select></label>
+          <label>Budget (yearly tuition)
+            <select id="pref-budget" name="budget">
+              <option value="">Any budget</option><option value="20000">Up to $20,000</option><option value="30000">Up to $30,000</option><option value="40000">Up to $40,000</option><option value="50000">Up to $50,000</option>
+            </select>
+          </label>
+          <label>School Size
+            <select id="pref-size" name="size"><option value="">Any size</option><option value="Small">Small</option><option value="Medium">Medium</option><option value="Large">Large</option></select>
+          </label>
+          <button type="submit">Find Matches</button>
+        </form>
+        <ul id="match-results" class="college-list"></ul>
+      </section>
+
+      <section id="tab-states" class="tab-panel card">
+        <h2>Interactive U.S. Map (Prototype)</h2>
+        <p class="section-note">Select a state to auto-fill preferences.</p>
+        <div class="us-map">
+          <svg viewBox="0 0 800 470" class="map-surface" aria-hidden="true">
+            <rect x="20" y="20" width="760" height="430" rx="20" fill="#eff6ff" stroke="#bfdbfe" />
+            <text x="400" y="250" text-anchor="middle" fill="#60a5fa" font-size="28">U.S. Map Prototype Canvas</text>
+          </svg>
+          <div id="state-map" class="state-overlay"></div>
+        </div>
+        <p id="selected-state" class="selected-state">Selected state: None</p>
+      </section>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>
