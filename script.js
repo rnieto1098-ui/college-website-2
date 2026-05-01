@@ -19,6 +19,9 @@ const prefBudget = document.getElementById("pref-budget");
 const prefSize = document.getElementById("pref-size");
 const prefForm = document.getElementById("preferences-form");
 const matchResults = document.getElementById("match-results");
+const majorRankingsTitle = document.getElementById("major-rankings-title");
+const majorRankingsList = document.getElementById("major-rankings-list");
+const rankingSchools = ["MIT","Stanford University","Harvard University","UC Berkeley","Carnegie Mellon University","Georgia Tech","University of Michigan","Caltech","UCLA","University of Texas at Austin"];
 const majorsSearch = document.getElementById("majors-search");
 const clearMajorsSearch = document.getElementById("clear-majors-search");
 const majorsSearchSummary = document.getElementById("majors-search-summary");
@@ -64,6 +67,16 @@ const studyFields = {
   }
 };
 
+function renderMajorRankings(major){
+  majorRankingsTitle.textContent = `Top Schools for ${major}`;
+  majorRankingsList.innerHTML = "";
+  rankingSchools.slice(0, 10).forEach((school, index) => {
+    const li = document.createElement("li");
+    li.textContent = `#${index + 1} ${school} — highly ranked for ${major}.`;
+    majorRankingsList.appendChild(li);
+  });
+}
+
 function initMajors(){
   const query = majorsSearch?.value?.toLowerCase().trim() || "";
   fieldsFolders.innerHTML = "";
@@ -100,7 +113,12 @@ function initMajors(){
       ul.className = "ranking-list";
       filteredMajors.forEach((major) => {
         const li = document.createElement("li");
-        li.textContent = major;
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "major-click";
+        btn.textContent = major;
+        btn.addEventListener("click", () => renderMajorRankings(major));
+        li.appendChild(btn);
         ul.appendChild(li);
       });
 
@@ -205,4 +223,4 @@ function initLogin(){
   });
 }
 
-initTabs(); initSearch(); initPreferenceOptions(); initPreferencesForm(); initMajors(); initMajorsSearch(); initGeoMap(); initLogin();
+initTabs(); initSearch(); initPreferenceOptions(); initPreferencesForm(); initMajors(); initMajorsSearch(); initGeoMap(); initLogin(); renderMajorRankings("Computer Science");
