@@ -81,3 +81,14 @@ button:hover { background: var(--primary-dark); }
 .major-folder{margin:.6rem 0 .2rem;padding:.55rem;border-left:3px solid #93c5fd;background:#f8fbff;border-radius:6px;}
 .major-folder h4{margin:.1rem 0 .35rem;font-size:.95rem;}
 .ranking-list{margin:.2rem 0 0;padding-left:1rem;font-size:.9rem;}
+
+.geo-layout{display:grid;grid-template-columns:1.3fr 1fr;gap:1rem;align-items:start;}
+.us-map-geo{border:1px solid #bfdbfe;border-radius:12px;background:#f8fbff;overflow:hidden;}
+.us-map-geo svg{width:100%;display:block;}
+.geo-state{fill:#dbeafe;stroke:#93c5fd;stroke-width:.8;cursor:pointer;}
+.geo-state:hover{fill:#bfdbfe;}
+.geo-state.active{fill:#2563eb;}
+.state-college-list{max-height:470px;overflow:auto;padding-left:1rem;margin:.2rem 0 0;}
+.state-college-list li{margin-bottom:.55rem;}
+.state-college-list p{margin:.2rem 0 0;color:#475569;font-size:.92rem;}
+@media (max-width:900px){.geo-layout{grid-template-columns:1fr;}}
