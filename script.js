@@ -19,6 +19,9 @@ const prefBudget = document.getElementById("pref-budget");
 const prefSize = document.getElementById("pref-size");
 const prefForm = document.getElementById("preferences-form");
 const matchResults = document.getElementById("match-results");
+const majorsSearch = document.getElementById("majors-search");
+const clearMajorsSearch = document.getElementById("clear-majors-search");
+const majorsSearchSummary = document.getElementById("majors-search-summary");
 
 function renderCollegeList(items, target) { target.innerHTML=""; if(!items.length){target.innerHTML="<li>No matching colleges found.</li>";return;} items.forEach(c=>{const li=document.createElement("li");li.textContent=`${c.name} (${c.state}) — ${c.major}, $${c.tuition.toLocaleString()}/yr, ${c.size}`;target.appendChild(li);}); }
 function initTabs(){tabButtons.forEach(button=>button.addEventListener("click",()=>{tabButtons.forEach(btn=>btn.classList.remove("active"));document.querySelectorAll(".tab-panel").forEach(panel=>panel.classList.remove("active"));button.classList.add("active");document.getElementById(`tab-${button.dataset.tab}`).classList.add("active");}));}
@@ -27,42 +30,58 @@ function initPreferenceOptions(){stateAbbrs.forEach(code=>prefState.insertAdjace
 function initPreferencesForm(){prefForm.addEventListener("submit",(e)=>{e.preventDefault();const matches=colleges.filter(c=>(!prefState.value||c.state===prefState.value)&&(!prefMajor.value||c.major===prefMajor.value)&&(!prefBudget.value||c.tuition<=Number(prefBudget.value))&&(!prefSize.value||c.size===prefSize.value));renderCollegeList(matches,matchResults);});}
 const studyFields = {
   "STEM & Applied Sciences": {
-    "Engineering": ["Mechanical Engineering","Electrical Engineering","Civil Engineering","Biomedical Engineering","Chemical Engineering"],
-    "Computer & Data": ["Computer Science","Data Science","Software Engineering","Cybersecurity","Information Systems"],
-    "Math & Physical Sciences": ["Mathematics","Statistics","Physics","Chemistry","Applied Mathematics"]
+    "Engineering": ["Mechanical Engineering","Electrical Engineering","Civil Engineering","Biomedical Engineering","Chemical Engineering","Aerospace Engineering","Industrial Engineering","Materials Engineering","Environmental Engineering","Petroleum Engineering","Nuclear Engineering","Systems Engineering"],
+    "Computer & Data": ["Computer Science","Data Science","Software Engineering","Cybersecurity","Information Systems","Artificial Intelligence","Machine Learning","Computer Engineering","Human-Computer Interaction","Cloud Computing","Database Systems","Bioinformatics"],
+    "Math & Physical Sciences": ["Mathematics","Statistics","Physics","Chemistry","Applied Mathematics","Actuarial Science","Computational Mathematics","Biostatistics","Geophysics","Astrophysics","Quantitative Finance","Operations Research"]
   },
   "Health & Life Sciences": {
-    "Clinical & Care": ["Nursing","Public Health","Pre-Med Biology","Health Administration","Nutrition"],
-    "Biological Sciences": ["Biology","Neuroscience","Microbiology","Genetics","Biochemistry"]
+    "Clinical & Care": ["Nursing","Public Health","Pre-Med Biology","Health Administration","Nutrition","Physical Therapy","Occupational Therapy","Speech Pathology","Dental Hygiene","Respiratory Therapy","Pharmacy","Radiologic Sciences"],
+    "Biological Sciences": ["Biology","Neuroscience","Microbiology","Genetics","Biochemistry","Cell Biology","Molecular Biology","Ecology","Marine Biology","Immunology","Zoology","Botany"]
   },
   "Business, Policy & Society": {
-    "Business": ["Finance","Accounting","Marketing","Management","Supply Chain Management"],
-    "Social Sciences": ["Psychology","Sociology","Political Science","International Relations","Economics"],
-    "Law & Public Service": ["Criminal Justice","Public Administration","Legal Studies","Public Policy","Emergency Management"]
+    "Business": ["Finance","Accounting","Marketing","Management","Supply Chain Management","Business Analytics","Entrepreneurship","International Business","Human Resources","Operations Management","Real Estate","Hospitality Management"],
+    "Social Sciences": ["Psychology","Sociology","Political Science","International Relations","Economics","Anthropology","Criminology","Geography","Public Policy","Urban Studies","Demography","Cognitive Science"],
+    "Law & Public Service": ["Criminal Justice","Public Administration","Legal Studies","Public Policy","Emergency Management","Homeland Security","Paralegal Studies","Law Enforcement","Fire Science","Nonprofit Management","Security Studies","Civic Leadership"]
   },
   "Arts, Communication & Humanities": {
-    "Arts & Design": ["Graphic Design","Architecture","Fine Arts","Film Production","UI/UX Design"],
-    "Communication": ["Journalism","Public Relations","Media Studies","Strategic Communication","Advertising"],
-    "Humanities": ["English","History","Philosophy","Creative Writing","Art History"]
+    "Arts & Design": ["Graphic Design","Architecture","Fine Arts","Film Production","UI/UX Design","Animation","Photography","Industrial Design","Interior Design","Fashion Design","Illustration","Digital Media"],
+    "Communication": ["Journalism","Public Relations","Media Studies","Strategic Communication","Advertising","Broadcasting","Corporate Communication","Digital Communications","Technical Communication","Political Communication","Audio Production","Social Media Management"],
+    "Humanities": ["English","History","Philosophy","Creative Writing","Art History","Religious Studies","Classics","Comparative Literature","Ethics","Archaeology","Linguistics","Cultural Studies"]
   },
   "Education, Environment & Interdisciplinary": {
-    "Education": ["Elementary Education","Special Education","Curriculum & Instruction","Educational Leadership","TESOL"],
-    "Environment & Agriculture": ["Environmental Science","Agricultural Science","Forestry","Wildlife Management","Sustainable Agriculture"],
-    "Interdisciplinary": ["Global Studies","Sustainability Studies","Digital Humanities","Innovation Studies","Science, Technology & Society"]
+    "Education": ["Elementary Education","Special Education","Curriculum & Instruction","Educational Leadership","TESOL","Secondary Education","Early Childhood Education","STEM Education","Educational Psychology","Literacy Education","Music Education","Higher Education"],
+    "Environment & Agriculture": ["Environmental Science","Agricultural Science","Forestry","Wildlife Management","Sustainable Agriculture","Animal Science","Plant Science","Soil Science","Food Science","Fisheries Science","Horticulture","Conservation Biology"],
+    "Interdisciplinary": ["Global Studies","Sustainability Studies","Digital Humanities","Innovation Studies","Science, Technology & Society","International Development","Peace & Conflict Studies","Gender Studies","Ethnic Studies","Human-Centered Design","Health & Society","Computational Social Science"]
   }
 };
 
 function initMajors(){
+  const query = majorsSearch?.value?.toLowerCase().trim() || "";
   fieldsFolders.innerHTML = "";
+  let matchCount = 0;
+
   Object.entries(studyFields).forEach(([umbrella, subfields]) => {
     const umbrellaDetails = document.createElement("details");
     umbrellaDetails.className = "study-umbrella";
+    umbrellaDetails.open = query.length > 0;
     umbrellaDetails.innerHTML = `<summary>${umbrella}</summary>`;
 
+    let umbrellaHasMatches = false;
+
     Object.entries(subfields).forEach(([subfield, majors]) => {
+      const filteredMajors = majors.filter((major) => {
+        const haystack = `${umbrella} ${subfield} ${major}`.toLowerCase();
+        return !query || haystack.includes(query);
+      });
+      if (!filteredMajors.length) return;
+
+      umbrellaHasMatches = true;
+      matchCount += filteredMajors.length;
+
       const subDetails = document.createElement("details");
       subDetails.className = "study-subfield";
-      subDetails.innerHTML = `<summary>${subfield}</summary>`;
+      subDetails.open = query.length > 0;
+      subDetails.innerHTML = `<summary>${subfield} (${filteredMajors.length})</summary>`;
 
       const majorWrap = document.createElement("div");
       majorWrap.className = "major-folder";
@@ -70,7 +89,7 @@ function initMajors(){
 
       const ul = document.createElement("ul");
       ul.className = "ranking-list";
-      majors.forEach((major) => {
+      filteredMajors.forEach((major) => {
         const li = document.createElement("li");
         li.textContent = major;
         ul.appendChild(li);
@@ -81,7 +100,23 @@ function initMajors(){
       umbrellaDetails.appendChild(subDetails);
     });
 
-    fieldsFolders.appendChild(umbrellaDetails);
+    if (umbrellaHasMatches) fieldsFolders.appendChild(umbrellaDetails);
+  });
+
+  majorsSearchSummary.textContent = query
+    ? `Showing ${matchCount} matching majors for "${majorsSearch.value}".`
+    : "Browse common fields of study and majors used across most universities.";
+
+  if (!fieldsFolders.children.length) {
+    fieldsFolders.innerHTML = "<p>No matching majors found. Try a broader term.</p>";
+  }
+}
+
+function initMajorsSearch(){
+  majorsSearch.addEventListener("input", initMajors);
+  clearMajorsSearch.addEventListener("click", () => {
+    majorsSearch.value = "";
+    initMajors();
   });
 }
 
@@ -128,4 +163,4 @@ async function initGeoMap(){
   renderStateColleges("CA");
 }
 
-initTabs(); initSearch(); initPreferenceOptions(); initPreferencesForm(); initMajors(); initGeoMap();
+initTabs(); initSearch(); initPreferenceOptions(); initPreferencesForm(); initMajors(); initMajorsSearch(); initGeoMap();

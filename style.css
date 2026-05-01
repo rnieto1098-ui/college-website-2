@@ -92,3 +92,5 @@ button:hover { background: var(--primary-dark); }
 .state-college-list li{margin-bottom:.55rem;}
 .state-college-list p{margin:.2rem 0 0;color:#475569;font-size:.92rem;}
 @media (max-width:900px){.geo-layout{grid-template-columns:1fr;}}
+
+#majors-search-summary{margin:.5rem 0 .2rem;}
