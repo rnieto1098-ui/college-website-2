@@ -1,10 +1,10 @@
 const colleges = [
-  { name: "Pacific Tech University", state: "CA", major: "Computer Science", tuition: 42000, size: "Large", acceptanceRate: "18%", fourYearCost: "$232,000", url: "https://example.edu/pacific-tech" },
-  { name: "Lakeside State College", state: "MI", major: "Business", tuition: 24000, size: "Medium", acceptanceRate: "54%", fourYearCost: "$128,000", url: "https://example.edu/lakeside-state" },
-  { name: "Blue Ridge University", state: "NC", major: "Nursing", tuition: 28000, size: "Medium", acceptanceRate: "42%", fourYearCost: "$152,000", url: "https://example.edu/blue-ridge" },
-  { name: "Metro Arts Institute", state: "NY", major: "Design", tuition: 36000, size: "Small", acceptanceRate: "36%", fourYearCost: "$188,000", url: "https://example.edu/metro-arts" },
-  { name: "Desert Valley University", state: "AZ", major: "Engineering", tuition: 31000, size: "Large", acceptanceRate: "47%", fourYearCost: "$168,000", url: "https://example.edu/desert-valley" },
-  { name: "Prairie Health College", state: "KS", major: "Biology", tuition: 19000, size: "Small", acceptanceRate: "61%", fourYearCost: "$104,000", url: "https://example.edu/prairie-health" }
+  { name: "Pacific Tech University", state: "CA", major: "Computer Science", tuition: 42000, size: "Large", location: "Urban", sportsLevel: "NCAA Division I", acceptanceRate: "18%", fourYearCost: "$232,000", url: "https://example.edu/pacific-tech" },
+  { name: "Lakeside State College", state: "MI", major: "Business", tuition: 24000, size: "Medium", location: "Suburban", sportsLevel: "NCAA Division II", acceptanceRate: "54%", fourYearCost: "$128,000", url: "https://example.edu/lakeside-state" },
+  { name: "Blue Ridge University", state: "NC", major: "Nursing", tuition: 28000, size: "Medium", location: "College Town", sportsLevel: "NCAA Division I", acceptanceRate: "42%", fourYearCost: "$152,000", url: "https://example.edu/blue-ridge" },
+  { name: "Metro Arts Institute", state: "NY", major: "Design", tuition: 36000, size: "Small", location: "Urban", sportsLevel: "NCAA Division III", acceptanceRate: "36%", fourYearCost: "$188,000", url: "https://example.edu/metro-arts" },
+  { name: "Desert Valley University", state: "AZ", major: "Engineering", tuition: 31000, size: "Large", location: "Urban", sportsLevel: "NCAA Division I", acceptanceRate: "47%", fourYearCost: "$168,000", url: "https://example.edu/desert-valley" },
+  { name: "Prairie Health College", state: "KS", major: "Biology", tuition: 19000, size: "Small", location: "College Town", sportsLevel: "NAIA", acceptanceRate: "61%", fourYearCost: "$104,000", url: "https://example.edu/prairie-health" }
 ];
 const stateNames = {AL:"Alabama",AK:"Alaska",AZ:"Arizona",AR:"Arkansas",CA:"California",CO:"Colorado",CT:"Connecticut",DE:"Delaware",FL:"Florida",GA:"Georgia",HI:"Hawaii",ID:"Idaho",IL:"Illinois",IN:"Indiana",IA:"Iowa",KS:"Kansas",KY:"Kentucky",LA:"Louisiana",ME:"Maine",MD:"Maryland",MA:"Massachusetts",MI:"Michigan",MN:"Minnesota",MS:"Mississippi",MO:"Missouri",MT:"Montana",NE:"Nebraska",NV:"Nevada",NH:"New Hampshire",NJ:"New Jersey",NM:"New Mexico",NY:"New York",NC:"North Carolina",ND:"North Dakota",OH:"Ohio",OK:"Oklahoma",OR:"Oregon",PA:"Pennsylvania",RI:"Rhode Island",SC:"South Carolina",SD:"South Dakota",TN:"Tennessee",TX:"Texas",UT:"Utah",VT:"Vermont",VA:"Virginia",WA:"Washington",WV:"West Virginia",WI:"Wisconsin",WY:"Wyoming"};
 const fipsToAbbr = {1:"AL",2:"AK",4:"AZ",5:"AR",6:"CA",8:"CO",9:"CT",10:"DE",12:"FL",13:"GA",15:"HI",16:"ID",17:"IL",18:"IN",19:"IA",20:"KS",21:"KY",22:"LA",23:"ME",24:"MD",25:"MA",26:"MI",27:"MN",28:"MS",29:"MO",30:"MT",31:"NE",32:"NV",33:"NH",34:"NJ",35:"NM",36:"NY",37:"NC",38:"ND",39:"OH",40:"OK",41:"OR",42:"PA",44:"RI",45:"SC",46:"SD",47:"TN",48:"TX",49:"UT",50:"VT",51:"VA",53:"WA",54:"WV",55:"WI",56:"WY"};
@@ -17,10 +17,10 @@ const prefState = document.getElementById("pref-state");
 const prefMajor = document.getElementById("pref-major");
 const prefBudget = document.getElementById("pref-budget");
 const prefSize = document.getElementById("pref-size");
+const prefLocation = document.getElementById("pref-location");
+const prefSports = document.getElementById("pref-sports");
 const prefForm = document.getElementById("preferences-form");
 const matchResults = document.getElementById("match-results");
-const majorRankingsTitle = document.getElementById("major-rankings-title");
-const majorRankingsList = document.getElementById("major-rankings-list");
 const rankingSchools = ["MIT","Stanford University","Harvard University","UC Berkeley","Carnegie Mellon University","Georgia Tech","University of Michigan","Caltech","UCLA","University of Texas at Austin"];
 const majorsSearch = document.getElementById("majors-search");
 const clearMajorsSearch = document.getElementById("clear-majors-search");
@@ -39,7 +39,7 @@ function renderSearchCards(items){collegeResults.innerHTML="";if(!items.length){
 function initTabs(){tabButtons.forEach(button=>button.addEventListener("click",()=>{tabButtons.forEach(btn=>btn.classList.remove("active"));document.querySelectorAll(".tab-panel").forEach(panel=>panel.classList.remove("active"));button.classList.add("active");document.getElementById(`tab-${button.dataset.tab}`).classList.add("active");}));}
 function initSearch(){renderSearchCards(colleges);collegeSearch.addEventListener("input",e=>renderSearchCards(colleges.filter(c=>c.name.toLowerCase().includes(e.target.value.toLowerCase().trim()))));clearSearch.addEventListener("click",()=>{collegeSearch.value="";renderSearchCards(colleges);});}
 function initPreferenceOptions(){Object.entries(stateNames).forEach(([code,name])=>prefState.insertAdjacentHTML("beforeend",`<option value="${code}">${name}</option>`));[...new Set(colleges.map(c=>c.major))].forEach(major=>prefMajor.insertAdjacentHTML("beforeend",`<option value="${major}">${major}</option>`));}
-function initPreferencesForm(){prefForm.addEventListener("submit",(e)=>{e.preventDefault();const matches=colleges.filter(c=>(!prefState.value||c.state===prefState.value)&&(!prefMajor.value||c.major===prefMajor.value)&&(!prefBudget.value||c.tuition<=Number(prefBudget.value))&&(!prefSize.value||c.size===prefSize.value));renderCollegeList(matches,matchResults);});}
+function initPreferencesForm(){prefForm.addEventListener("submit",(e)=>{e.preventDefault();const matches=colleges.filter(c=>(!prefState.value||c.state===prefState.value)&&(!prefMajor.value||c.major===prefMajor.value)&&(!prefBudget.value||c.tuition<=Number(prefBudget.value))&&(!prefSize.value||c.size===prefSize.value)&&(!prefLocation.value||c.location===prefLocation.value)&&(!prefSports.value||c.sportsLevel===prefSports.value));renderCollegeList(matches,matchResults);});}
 const studyFields = {
   "STEM & Applied Sciences": {
     "Engineering": ["Mechanical Engineering","Electrical Engineering","Civil Engineering","Biomedical Engineering","Chemical Engineering","Aerospace Engineering","Industrial Engineering","Materials Engineering","Environmental Engineering","Petroleum Engineering","Nuclear Engineering","Systems Engineering"],
@@ -67,14 +67,15 @@ const studyFields = {
   }
 };
 
-function renderMajorRankings(major){
-  majorRankingsTitle.textContent = `Top Schools for ${major}`;
-  majorRankingsList.innerHTML = "";
+function buildRankingListElement(major){
+  const ul = document.createElement("ul");
+  ul.className = "inline-rankings";
   rankingSchools.slice(0, 10).forEach((school, index) => {
     const li = document.createElement("li");
     li.textContent = `#${index + 1} ${school} — highly ranked for ${major}.`;
-    majorRankingsList.appendChild(li);
+    ul.appendChild(li);
   });
+  return ul;
 }
 
 function initMajors(){
@@ -91,7 +92,7 @@ function initMajors(){
     let umbrellaHasMatches = false;
 
     Object.entries(subfields).forEach(([subfield, majors]) => {
-      const filteredMajors = majors.filter((major) => {
+      const filteredMajors = [...majors].sort((a, b) => a.localeCompare(b)).filter((major) => {
         const haystack = `${umbrella} ${subfield} ${major}`.toLowerCase();
         return !query || haystack.includes(query);
       });
@@ -117,7 +118,14 @@ function initMajors(){
         btn.type = "button";
         btn.className = "major-click";
         btn.textContent = major;
-        btn.addEventListener("click", () => renderMajorRankings(major));
+        btn.addEventListener("click", () => {
+          const existing = li.querySelector(".inline-rankings");
+          if (existing) {
+            existing.remove();
+          } else {
+            li.appendChild(buildRankingListElement(major));
+          }
+        });
         li.appendChild(btn);
         ul.appendChild(li);
       });
@@ -206,7 +214,7 @@ function initLogin(){
   });
 
   saveProfileBtn.addEventListener("click", () => {
-    const payload = { state: prefState.value, major: prefMajor.value, budget: prefBudget.value, size: prefSize.value };
+    const payload = { state: prefState.value, major: prefMajor.value, budget: prefBudget.value, size: prefSize.value, location: prefLocation.value, sportsLevel: prefSports.value };
     localStorage.setItem("campusInsiderPrefs", JSON.stringify(payload));
     loginStatus.textContent = "Preferences saved to your profile.";
   });
@@ -223,4 +231,4 @@ function initLogin(){
   });
 }
 
-initTabs(); initSearch(); initPreferenceOptions(); initPreferencesForm(); initMajors(); initMajorsSearch(); initGeoMap(); initLogin(); renderMajorRankings("Computer Science");
+initTabs(); initSearch(); initPreferenceOptions(); initPreferencesForm(); initMajors(); initMajorsSearch(); initGeoMap(); initLogin();
