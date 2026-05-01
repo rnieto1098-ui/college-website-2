@@ -98,3 +98,10 @@ button:hover { background: var(--primary-dark); }
 .tabs{justify-content:flex-start;align-items:center;}
 .tab-login{margin-left:auto;}
 .auth-buttons,.auth-actions{display:flex;gap:.6rem;flex-wrap:wrap;margin:.5rem 0;}
+
+.college-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:.75rem;margin-top:.8rem;}
+.college-card{display:block;text-decoration:none;color:inherit;border:1px solid var(--border);border-radius:12px;padding:.8rem;background:#fff;box-shadow:var(--shadow);}
+.college-card:hover{border-color:#93c5fd;transform:translateY(-1px);}
+.college-card h3{margin:.1rem 0 .4rem;font-size:1rem;}
+.college-meta{font-size:.9rem;color:#475569;margin:.15rem 0;}
+.college-link{font-size:.88rem;color:#1d4ed8;font-weight:600;}
