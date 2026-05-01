@@ -25,7 +25,65 @@ function initTabs(){tabButtons.forEach(button=>button.addEventListener("click",(
 function initSearch(){renderCollegeList(colleges,collegeResults);collegeSearch.addEventListener("input",e=>renderCollegeList(colleges.filter(c=>c.name.toLowerCase().includes(e.target.value.toLowerCase().trim())),collegeResults));clearSearch.addEventListener("click",()=>{collegeSearch.value="";renderCollegeList(colleges,collegeResults);});}
 function initPreferenceOptions(){stateAbbrs.forEach(code=>prefState.insertAdjacentHTML("beforeend",`<option value='${code}'>${code}</option>`));[...new Set(colleges.map(c=>c.major))].forEach(major=>prefMajor.insertAdjacentHTML("beforeend",`<option value='${major}'>${major}</option>`));}
 function initPreferencesForm(){prefForm.addEventListener("submit",(e)=>{e.preventDefault();const matches=colleges.filter(c=>(!prefState.value||c.state===prefState.value)&&(!prefMajor.value||c.major===prefMajor.value)&&(!prefBudget.value||c.tuition<=Number(prefBudget.value))&&(!prefSize.value||c.size===prefSize.value));renderCollegeList(matches,matchResults);});}
-function initMajors(){fieldsFolders.innerHTML='<details open><summary>Preview</summary><div class="major-folder"><h4>Majors content available in this prototype.</h4></div></details>';}
+const studyFields = {
+  "STEM & Applied Sciences": {
+    "Engineering": ["Mechanical Engineering","Electrical Engineering","Civil Engineering","Biomedical Engineering","Chemical Engineering"],
+    "Computer & Data": ["Computer Science","Data Science","Software Engineering","Cybersecurity","Information Systems"],
+    "Math & Physical Sciences": ["Mathematics","Statistics","Physics","Chemistry","Applied Mathematics"]
+  },
+  "Health & Life Sciences": {
+    "Clinical & Care": ["Nursing","Public Health","Pre-Med Biology","Health Administration","Nutrition"],
+    "Biological Sciences": ["Biology","Neuroscience","Microbiology","Genetics","Biochemistry"]
+  },
+  "Business, Policy & Society": {
+    "Business": ["Finance","Accounting","Marketing","Management","Supply Chain Management"],
+    "Social Sciences": ["Psychology","Sociology","Political Science","International Relations","Economics"],
+    "Law & Public Service": ["Criminal Justice","Public Administration","Legal Studies","Public Policy","Emergency Management"]
+  },
+  "Arts, Communication & Humanities": {
+    "Arts & Design": ["Graphic Design","Architecture","Fine Arts","Film Production","UI/UX Design"],
+    "Communication": ["Journalism","Public Relations","Media Studies","Strategic Communication","Advertising"],
+    "Humanities": ["English","History","Philosophy","Creative Writing","Art History"]
+  },
+  "Education, Environment & Interdisciplinary": {
+    "Education": ["Elementary Education","Special Education","Curriculum & Instruction","Educational Leadership","TESOL"],
+    "Environment & Agriculture": ["Environmental Science","Agricultural Science","Forestry","Wildlife Management","Sustainable Agriculture"],
+    "Interdisciplinary": ["Global Studies","Sustainability Studies","Digital Humanities","Innovation Studies","Science, Technology & Society"]
+  }
+};
+
+function initMajors(){
+  fieldsFolders.innerHTML = "";
+  Object.entries(studyFields).forEach(([umbrella, subfields]) => {
+    const umbrellaDetails = document.createElement("details");
+    umbrellaDetails.className = "study-umbrella";
+    umbrellaDetails.innerHTML = `<summary>${umbrella}</summary>`;
+
+    Object.entries(subfields).forEach(([subfield, majors]) => {
+      const subDetails = document.createElement("details");
+      subDetails.className = "study-subfield";
+      subDetails.innerHTML = `<summary>${subfield}</summary>`;
+
+      const majorWrap = document.createElement("div");
+      majorWrap.className = "major-folder";
+      majorWrap.innerHTML = `<h4>Common majors in ${subfield}</h4>`;
+
+      const ul = document.createElement("ul");
+      ul.className = "ranking-list";
+      majors.forEach((major) => {
+        const li = document.createElement("li");
+        li.textContent = major;
+        ul.appendChild(li);
+      });
+
+      majorWrap.appendChild(ul);
+      subDetails.appendChild(majorWrap);
+      umbrellaDetails.appendChild(subDetails);
+    });
+
+    fieldsFolders.appendChild(umbrellaDetails);
+  });
+}
 
 function buildStateTop25(state){
   return Array.from({length:25},(_,i)=>({
