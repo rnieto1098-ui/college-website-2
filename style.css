@@ -75,3 +75,9 @@ button:hover { background: var(--primary-dark); }
   .preferences-form { grid-template-columns: 1fr; }
   .search-wrap { flex-direction: column; }
 }
+
+.fields-folders details{border:1px solid var(--border);border-radius:10px;padding:.65rem .8rem;margin:.6rem 0;background:#fff;}
+.fields-folders summary{cursor:pointer;font-weight:600;}
+.major-folder{margin:.6rem 0 .2rem;padding:.55rem;border-left:3px solid #93c5fd;background:#f8fbff;border-radius:6px;}
+.major-folder h4{margin:.1rem 0 .35rem;font-size:.95rem;}
+.ranking-list{margin:.2rem 0 0;padding-left:1rem;font-size:.9rem;}
