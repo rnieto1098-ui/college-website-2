@@ -21,6 +21,7 @@
         <button class="tab-btn" data-tab="majors" type="button">Majors</button>
         <button class="tab-btn" data-tab="preferences" type="button">Preferences</button>
         <button class="tab-btn" data-tab="states" type="button">States Map</button>
+        <button class="tab-btn tab-login" data-tab="login" type="button">Login</button>
       </nav>
 
       <section id="tab-search" class="tab-panel active card">
@@ -71,6 +72,28 @@
           </div>
         </div>
       </section>
+    
+
+      <section id="tab-login" class="tab-panel card">
+        <h2>Account Login</h2>
+        <p class="section-note">Sign in to save your preferences and receive personalized college recommendations.</p>
+        <div class="auth-buttons">
+          <button type="button" id="login-google">Continue with Google</button>
+          <button type="button" id="login-apple">Continue with Apple</button>
+        </div>
+        <form id="email-login-form" class="preferences-form">
+          <label>Email<input type="email" id="login-email" placeholder="you@example.com" required /></label>
+          <label>Password<input type="password" id="login-password" placeholder="••••••••" required /></label>
+          <button type="submit">Login with Email</button>
+        </form>
+        <p id="login-status" class="section-note">Not logged in.</p>
+        <div class="auth-actions">
+          <button type="button" id="save-profile">Save My Preferences</button>
+          <button type="button" id="get-recommendations">Get Personalized Recommendations</button>
+        </div>
+        <ul id="personalized-list" class="college-list"></ul>
+      </section>
+
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>

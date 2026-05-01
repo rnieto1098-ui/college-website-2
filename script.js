@@ -22,6 +22,14 @@ const matchResults = document.getElementById("match-results");
 const majorsSearch = document.getElementById("majors-search");
 const clearMajorsSearch = document.getElementById("clear-majors-search");
 const majorsSearchSummary = document.getElementById("majors-search-summary");
+const loginGoogle = document.getElementById("login-google");
+const loginApple = document.getElementById("login-apple");
+const emailLoginForm = document.getElementById("email-login-form");
+const loginStatus = document.getElementById("login-status");
+const saveProfileBtn = document.getElementById("save-profile");
+const recommendationsBtn = document.getElementById("get-recommendations");
+const personalizedList = document.getElementById("personalized-list");
+
 
 function renderCollegeList(items, target) { target.innerHTML=""; if(!items.length){target.innerHTML="<li>No matching colleges found.</li>";return;} items.forEach(c=>{const li=document.createElement("li");li.textContent=`${c.name} (${c.state}) — ${c.major}, $${c.tuition.toLocaleString()}/yr, ${c.size}`;target.appendChild(li);}); }
 function initTabs(){tabButtons.forEach(button=>button.addEventListener("click",()=>{tabButtons.forEach(btn=>btn.classList.remove("active"));document.querySelectorAll(".tab-panel").forEach(panel=>panel.classList.remove("active"));button.classList.add("active");document.getElementById(`tab-${button.dataset.tab}`).classList.add("active");}));}
@@ -163,4 +171,37 @@ async function initGeoMap(){
   renderStateColleges("CA");
 }
 
-initTabs(); initSearch(); initPreferenceOptions(); initPreferencesForm(); initMajors(); initMajorsSearch(); initGeoMap();
+function setLoggedIn(provider){
+  localStorage.setItem("campusInsiderAuth", provider);
+  loginStatus.textContent = `Logged in with ${provider}. You can now save data and get personalized recommendations.`;
+}
+
+function initLogin(){
+  const existing = localStorage.getItem("campusInsiderAuth");
+  if (existing) setLoggedIn(existing);
+  loginGoogle.addEventListener("click", () => setLoggedIn("Google"));
+  loginApple.addEventListener("click", () => setLoggedIn("Apple"));
+  emailLoginForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    setLoggedIn("Email");
+  });
+
+  saveProfileBtn.addEventListener("click", () => {
+    const payload = { state: prefState.value, major: prefMajor.value, budget: prefBudget.value, size: prefSize.value };
+    localStorage.setItem("campusInsiderPrefs", JSON.stringify(payload));
+    loginStatus.textContent = "Preferences saved to your profile.";
+  });
+
+  recommendationsBtn.addEventListener("click", () => {
+    personalizedList.innerHTML = "";
+    const matches = colleges.filter((c) => (!prefState.value || c.state === prefState.value) && (!prefMajor.value || c.major === prefMajor.value));
+    const recs = (matches.length ? matches : colleges).slice(0, 5);
+    recs.forEach((college, idx) => {
+      const li = document.createElement("li");
+      li.textContent = `#${idx + 1} ${college.name} — Best match for your profile in ${stateNames[college.state] || college.state}.`;
+      personalizedList.appendChild(li);
+    });
+  });
+}
+
+initTabs(); initSearch(); initPreferenceOptions(); initPreferencesForm(); initMajors(); initMajorsSearch(); initGeoMap(); initLogin();

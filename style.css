@@ -94,3 +94,7 @@ button:hover { background: var(--primary-dark); }
 @media (max-width:900px){.geo-layout{grid-template-columns:1fr;}}
 
 #majors-search-summary{margin:.5rem 0 .2rem;}
+
+.tabs{justify-content:flex-start;align-items:center;}
+.tab-login{margin-left:auto;}
+.auth-buttons,.auth-actions{display:flex;gap:.6rem;flex-wrap:wrap;margin:.5rem 0;}
